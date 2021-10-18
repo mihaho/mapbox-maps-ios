@@ -14,6 +14,11 @@ public enum OrnamentVisibility: String, Equatable {
     case visible
 }
 
+public enum CompassImage: Equatable {
+    case `default`
+    case custom(UIImage)
+}
+
 internal struct Ornaments {
     static let localizableTableName = "OrnamentsLocalizable"
     static let telemetryURL = "https://www.mapbox.com/telemetry/"
@@ -58,7 +63,7 @@ public class OrnamentsManager: NSObject {
         self.scalebarView = scalebarView
 
         // Compass View
-        let compassView = MapboxCompassOrnamentView(visibility: options.compass.visibility)
+        let compassView = MapboxCompassOrnamentView(visibility: options.compass.visibility, image: options.compass.image)
         compassView.translatesAutoresizingMaskIntoConstraints = false
         compassView.tapAction = {
             cameraAnimationsManager.cancelAnimations()
@@ -140,6 +145,12 @@ public class OrnamentsManager: NSObject {
         compassView.visibility = options.compass.visibility
         compassView.isHidden = options.compass.visibility == .hidden
         attributionButton.isHidden = options.attributionButton.visibility == .hidden
+
+        // set compass visibility
+        compassView.visibility = options.compass.visibility
+
+        // Update compass image
+        compassView.image = options.compass.image
     }
 
     private func constraints(with view: UIView, position: OrnamentPosition, margins: CGPoint) -> [NSLayoutConstraint] {
